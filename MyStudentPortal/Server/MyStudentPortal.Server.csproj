@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<WasmBuildNative>true</WasmBuildNative>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.15" />
+		<PackageReference Include="SqliteWasmHelper" Version="1.2.0-beta-gf8e1db1f31" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Client\MyStudentPortal.Client.csproj" />
+		<ProjectReference Include="..\Shared\MyStudentPortal.Shared.csproj" />
+	</ItemGroup>
+</Project>
