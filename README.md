@@ -6,10 +6,7 @@ MyStudentPortal is a Blazor application that follows the Clean Architecture prin
 
 - **User Registration and Authentication**: Students can register and log in to the portal.
 - **Course Management**: Students can view and enroll in available courses.
-- **Assignment Submission**: Students can submit assignments for their enrolled courses.
-- **Grading and Feedback**: Instructors can grade assignments and provide feedback to students.
-- **Notification System**: Students and instructors receive notifications for important events, such as assignment deadlines and grading updates.
-
+- 
 ### Architecture
 
 MyStudentPortal follows the Clean Architecture principles, which consist of the following layers:
