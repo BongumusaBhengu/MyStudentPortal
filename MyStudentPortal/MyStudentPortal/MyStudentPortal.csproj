@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-MyStudentPortal-05700452-f584-4428-9a90-786572adddd9</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="5.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="SqliteWasmHelper" Version="1.2.0-beta-gf8e1db1f31" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyStudentPortal.Client\MyStudentPortal.Client.csproj" />
+    <ProjectReference Include="..\MyStudentPortal.Persistence\MyStudentPortal.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>
