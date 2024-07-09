@@ -3,3 +3,13 @@
 ################################################################################
 
 /.vs
+/MyStudentPortal/MyStudentPortal/bin/Debug/net8.0
+/MyStudentPortal/MyStudentPortal/obj
+/MyStudentPortal/MyStudentPortal.Application/bin/Debug/net8.0
+/MyStudentPortal/MyStudentPortal.Application/obj
+/MyStudentPortal/MyStudentPortal.Client/bin/Debug/net8.0
+/MyStudentPortal/MyStudentPortal.Client/obj
+/MyStudentPortal/MyStudentPortal.Domain/bin/Debug
+/MyStudentPortal/MyStudentPortal.Domain/obj
+/MyStudentPortal/MyStudentPortal.Persistence/bin/Debug/net8.0
+/MyStudentPortal/MyStudentPortal.Persistence/obj
