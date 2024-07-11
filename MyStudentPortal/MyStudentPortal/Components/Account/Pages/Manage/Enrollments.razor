@@ -3,49 +3,63 @@
 @using Microsoft.AspNetCore.Identity
 @using MyStudentPortal.Application.Features
 @using MyStudentPortal.Application.Features.Courses
+@using MyStudentPortal.Application.Features.Enrollments.Queries
+@using MyStudentPortal.Application.Features.Enrollments.Queries.Create
 @using MyStudentPortal.Domain.Entities
 
 
 @inject IMediator Mediator;
 @inject UserManager<ApplicationUser> UserManager
 
-<h1>Student Registration</h1>
-<div class="col-md-4">
-    <EditForm Model="Input" FormName="enrollment" method="post">
-        <ValidationSummary class="text-danger" role="alert" />
-        <div class="form-floating mb-3">
-            <label for="studentId">Student name:</label>
-            <InputText Value="@Student" type="string" id="studentId" class="form-control" disabled />
-        </div>
-        <div class="form-floating mb-3">
-            <label for="courseList">Courses:</label>
-            <select multiple id="courseList" class="form-control">
-                @foreach (var course in Courses)
-                {
-                    <option value="@course.Id">@course.Name</option>
-                }
-            </select>
-        </div>
-        <div class="form-floating mb-3">
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </div>
-    </EditForm>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Course Registration</h2>
+        <EditForm Model="Input" FormName="enrollment" OnValidSubmit="OnValidSubmitAsync" method="post">
+            <ValidationSummary class="text-danger" role="alert" />
+            <label for="courseList" class="form-label">Courses:</label>
+            <div class="form-floating mb-3">
+                <select multiple id="courseList" class="form-control" style="height: 400px;">
+                    @foreach (var course in Courses)
+                    {
+                        <option value="@course.Id">@course.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-floating mb-3">
+                <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            </div>
+        </EditForm>
+    </div>
+    <div class="col-md-4">
+        <h2>Registered Course</h2>
+        <EditForm Model="Input" FormName="enrollment" OnValidSubmit="OnValidSubmitAsync" method="post">
+            <label for="courseList" class="form-label">Courses:</label>
+            <div class="form-floating mb-3">
+                <select multiple id="courseList" class="form-control" style="height: 400px;">
+                    @foreach (var course in Courses)
+                    {
+                        <option value="@course.Id">@course.Name</option>
+                    }
+                </select>
+            </div>
+        </EditForm>
+    </div>
 </div>
 @code {
+
+    private ApplicationUser user = default!;
+
+    private IList<CourseDto>? Courses { get; set; }
+
+    [SupplyParameterFromForm]
+    private EnrollmentsDto? Input { get; set; } = new();
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    private string Student { get; set; } = "";
-
-    private IList<CourseDto>? Courses { get; set; }
-
-    private Enrollment? Input { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
-        var user = await UserManager.GetUserAsync(HttpContext.User);
-        Student = $"{user.Name} {user.Surname}";
+        user = await UserManager.GetUserAsync(HttpContext.User);
         Courses = await GetCoursesAsync();
     }
 
@@ -54,8 +68,10 @@
         return await Mediator.Send(new GetCourseQuery());
     }
 
-    private async Task OnValidSubmitAsync(EditContext editContext)
+    private async Task OnValidSubmitAsync()
     {
-
+        if (Input is not null)
+            await Mediator.Send(new CreateEnrollmentsQuery(Input));
     }
+
 }

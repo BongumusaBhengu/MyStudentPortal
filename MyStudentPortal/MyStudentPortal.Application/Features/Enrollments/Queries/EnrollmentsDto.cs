@@ -29,15 +29,7 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries
         /// <value>
         /// The application user.
         /// </value>
-        public ApplicationUser ApplicationUser { get; set; }
-
-        /// <summary>
-        /// Gets or sets the student identifier.
-        /// </summary>
-        /// <value>
-        /// The student identifier.
-        /// </value>
-        public int StudentId { get; set; }
+        public ApplicationUser? ApplicationUser { get; set; }
 
         #endregion Public Properties
     }

@@ -19,6 +19,18 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
+                <input type="text" value="@user.Name" class="form-control" disabled />
+                <label for="name" class="form-label">Name</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" value="@user.Surname" class="form-control" disabled />
+                <label for="surname" class="form-label">Surname</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" value="@user.Email" class="form-control" disabled />
+                <label for="email" class="form-label">Email</label>
+            </div>
+            <div class="form-floating mb-3">
                 <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
                 <label for="username" class="form-label">Username</label>
             </div>

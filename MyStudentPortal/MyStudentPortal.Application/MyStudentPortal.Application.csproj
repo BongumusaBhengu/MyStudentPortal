@@ -22,8 +22,4 @@
     <ProjectReference Include="..\MyStudentPortal.Domain\MyStudentPortal.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Enrollments\Queries\Create\" />
-  </ItemGroup>
-
 </Project>

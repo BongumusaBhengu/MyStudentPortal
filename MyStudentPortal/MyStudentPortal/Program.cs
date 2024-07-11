@@ -38,9 +38,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-
-builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
-
 // Register IUnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -24,10 +24,8 @@ namespace MyStudentPortal.Application.Common.Mappings
 
             //Dto to Entity Application Enrollment
             CreateMap<EnrollmentsDto, Enrollment>()
-                .ForMember(dest => dest.CourseId, opt => opt.MapFrom(src => src.CourseId))
                 .ForMember(dest => dest.EnrollmentDate, opt => opt.MapFrom(src => src.EnrollmentDate))
-                .ForMember(dest => dest.ApplicationUser, opt => opt.MapFrom(src => src.ApplicationUser))
-                .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.StudentId));
+                .ForMember(dest => dest.ApplicationUser, opt => opt.MapFrom(src => src.ApplicationUser));
 
             //Entity to Dto Course
             CreateMap<Course, CourseDto>()
