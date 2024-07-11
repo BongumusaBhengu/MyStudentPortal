@@ -1,6 +1,8 @@
 ﻿@page "/Account/Manage/PersonalData"
+@using Microsoft.AspNetCore.Identity
+@using MyStudentPortal.Domain.Entities
 
-@inject IdentityUserAccessor UserAccessor
+@inject UserManager<ApplicationUser> UserManager
 
 <PageTitle>Personal Data</PageTitle>
 
@@ -29,6 +31,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _ = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        _ = await UserManager.GetUserAsync(HttpContext.User);
     }
 }

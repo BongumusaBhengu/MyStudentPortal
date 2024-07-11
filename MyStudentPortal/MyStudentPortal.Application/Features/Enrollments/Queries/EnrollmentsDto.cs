@@ -22,13 +22,14 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries
         /// </value>
         public DateTime EnrollmentDate { get; set; }
 
+
         /// <summary>
-        /// Gets or sets the student.
+        /// Gets or sets the application user.
         /// </summary>
         /// <value>
-        /// The student.
+        /// The application user.
         /// </value>
-        public Student Student { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
 
         /// <summary>
         /// Gets or sets the student identifier.

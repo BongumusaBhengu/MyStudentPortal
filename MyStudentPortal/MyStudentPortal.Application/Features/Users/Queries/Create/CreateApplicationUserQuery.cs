@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿// Ignore Spelling: Dto
+
+using AutoMapper;
 using MediatR;
 using MyStudentPortal.Application.Common;
 using MyStudentPortal.Application.Repositories.Interfaces;
@@ -6,7 +8,7 @@ using MyStudentPortal.Domain.Entities;
 
 namespace MyStudentPortal.Application.Features.Users.Queries
 {
-    public record CreateApplicationUserQuery : IRequest<ApplicationUserDto>
+    public record CreateApplicationUserQuery : IRequest<ApplicationUser?>
     {
         /// <summary>
         /// Gets the application user dto.
@@ -26,34 +28,19 @@ namespace MyStudentPortal.Application.Features.Users.Queries
         }
     }
 
-    public class CreateApplicationUserQueryHandler : IRequestHandler<CreateApplicationUserQuery, ApplicationUserDto>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CreateApplicationUserQueryHandler"/> class.
+    /// </summary>
+    /// <param name="applicationUserRepository">The application user repository.</param>
+    /// <param name="mapper">The mapper.</param>
+    /// <param name="unitOfWork">
+    /// The unit of work
+    /// </param>
+    public class CreateApplicationUserQueryHandler(IMapper mapper, IUnitOfWork unitOfWork, IApplicationUserRepository applicationUserRepository) 
+        : IRequestHandler<CreateApplicationUserQuery, ApplicationUser?>
     {
-        #region Private Fields
-
-        /// <summary>
-        /// The unit of work
-        /// </summary>
-        private readonly IApplicationUserRepository _applicationUserRepository;
-
-        /// <summary>
-        /// The mapper
-        /// </summary>
-        private readonly IMapper _mapper;
-
-        #endregion Private Fields
 
         #region Public Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateApplicationUserQueryHandler"/> class.
-        /// </summary>
-        /// <param name="applicationUserRepository">The application user repository.</param>
-        /// <param name="mapper">The mapper.</param>
-        public CreateApplicationUserQueryHandler(IApplicationUserRepository applicationUserRepository, IMapper mapper)
-        {
-            _applicationUserRepository = applicationUserRepository;
-            _mapper = mapper;
-        }
 
         #endregion Public Constructors
 
@@ -65,19 +52,20 @@ namespace MyStudentPortal.Application.Features.Users.Queries
         /// <param name="query">The query.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<ApplicationUserDto> Handle(CreateApplicationUserQuery query, CancellationToken cancellationToken)
+        public async Task<ApplicationUser?> Handle(CreateApplicationUserQuery query, CancellationToken cancellationToken)
         {
             //Map
-            var newUser = _mapper.Map<ApplicationUser>(query.ApplicationUserDto);
+            var newUser = mapper.Map<ApplicationUser>(query.ApplicationUserDto);
             //Encrypt password
             newUser.PasswordHash = PasswordEncryption.EncryptPassword(query.ApplicationUserDto.Password);
 
-            var results = await _applicationUserRepository.CreateAsync(newUser);
+            var applicationUser = await applicationUserRepository.CreateAsync(newUser);
+            await unitOfWork.SaveAsync(cancellationToken);
 
-            //Return
-            return _mapper.Map<ApplicationUserDto>(results);
+            return applicationUser;
         }
 
         #endregion Public Methods
+
     }
 }

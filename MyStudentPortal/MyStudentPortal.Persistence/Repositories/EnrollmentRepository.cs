@@ -36,7 +36,7 @@ namespace MyStudentPortal.Persistence.Repositories
         /// </summary>
         /// <param name="studentId">The student identifier.</param>
         /// <returns></returns>
-        public async Task<List<Enrollment>> GetAllForStudent(int studentId)
+        public async Task<List<Enrollment>> GetAllForStudent(string studentId)
         {
             return await _dbContext.Enrollments
                 .Where(e => e.StudentId == studentId)

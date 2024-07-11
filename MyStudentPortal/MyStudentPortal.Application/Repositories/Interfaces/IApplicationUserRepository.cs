@@ -15,7 +15,7 @@ namespace MyStudentPortal.Application.Repositories.Interfaces
         /// <returns>
         ///   <br />
         /// </returns>
-        Task<ApplicationUser> CreateAsync(ApplicationUser applicationUser);
+        Task<ApplicationUser?> CreateAsync(ApplicationUser applicationUser);
 
         /// <summary>
         /// Deletes the application user.
@@ -39,7 +39,7 @@ namespace MyStudentPortal.Application.Repositories.Interfaces
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Task<ApplicationUser> GetByIdAsync(int id);
+        Task<ApplicationUser?> GetByIdAsync(int id);
 
         /// <summary>
         /// Gets the name of the application user by user name.

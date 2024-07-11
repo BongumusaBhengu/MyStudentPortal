@@ -12,13 +12,13 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries.Get
         /// <value>
         /// The identifier.
         /// </value>
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetEnrollmentsQuery"/> class.
         /// </summary>
         /// <param name="studentId">The student identifier.</param>
-        public GetEnrollmentsQuery(int studentId)
+        public GetEnrollmentsQuery(string studentId)
         {
             StudentId = studentId;
         }

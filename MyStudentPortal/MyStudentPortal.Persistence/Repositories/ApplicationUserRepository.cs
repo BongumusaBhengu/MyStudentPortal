@@ -1,44 +1,30 @@
 ﻿using MyStudentPortal.Application.Repositories.Interfaces;
 using MyStudentPortal.Domain.Entities;
 using MyStudentPortal.Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyStudentPortal.Persistence.Repositories
 {
-    public class ApplicationUserRepository : IApplicationUserRepository
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ApplicationUserRepository"/> class.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
+    public class ApplicationUserRepository(StudentPortalDBContext dbContext) : IApplicationUserRepository
     {
-
         #region Private Fields
 
         /// <summary>
         /// The database context
         /// </summary>
-        private readonly StudentPortalDBContext _dbContext;
+        private readonly StudentPortalDBContext _dbContext = dbContext;
 
         #endregion Private Fields
 
-        #region Public Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationUserRepository"/> class.
-        /// </summary>
-        /// <param name="dbContext">The database context.</param>
-        public ApplicationUserRepository(StudentPortalDBContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
-        #endregion Public Constructors
-
         #region Public Methods
 
-        public Task<ApplicationUser> CreateAsync(ApplicationUser applicationUser)
+        public async Task<ApplicationUser?> CreateAsync(ApplicationUser applicationUser)
         {
-            throw new NotImplementedException();
+            await _dbContext.Set<ApplicationUser>().AddAsync(applicationUser);
+            return applicationUser;
         }
 
         public Task<bool> DeleteByIdAsync(int id)
@@ -51,9 +37,9 @@ namespace MyStudentPortal.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<ApplicationUser> GetByIdAsync(int id)
+        public async Task<ApplicationUser?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<ApplicationUser>().FindAsync(id);
         }
 
         public Task<ApplicationUser> GetByUserNameAsync(string userName)
@@ -67,6 +53,5 @@ namespace MyStudentPortal.Persistence.Repositories
         }
 
         #endregion Public Methods
-
     }
 }

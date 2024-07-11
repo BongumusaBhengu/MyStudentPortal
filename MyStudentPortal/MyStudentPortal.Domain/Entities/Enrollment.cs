@@ -2,13 +2,23 @@
 {
     public class Enrollment : BaseAuditableEntity
     {
+        #region Public Properties
+
         /// <summary>
-        /// Gets or sets the student identifier.
+        /// Gets or sets the application user.
         /// </summary>
         /// <value>
-        /// The student identifier.
+        /// The application user.
         /// </value>
-        public int StudentId { get; set; }
+        public ApplicationUser? ApplicationUser { get; set; }
+
+        /// <summary>
+        /// Gets or sets the course.
+        /// </summary>
+        /// <value>
+        /// The course.
+        /// </value>
+        public Course? Course { get; set; }
 
         /// <summary>
         /// Gets or sets the course identifier.
@@ -27,19 +37,13 @@
         public DateTime EnrollmentDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the student.
+        /// Gets or sets the student identifier.
         /// </summary>
         /// <value>
-        /// The student.
+        /// The student identifier.
         /// </value>
-        public Student Student { get; set; }
+        public string StudentId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the course.
-        /// </summary>
-        /// <value>
-        /// The course.
-        /// </value>
-        public Course Course { get; set; }
+        #endregion Public Properties
     }
 }

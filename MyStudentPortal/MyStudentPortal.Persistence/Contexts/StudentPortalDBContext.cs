@@ -1,25 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyStudentPortal.Domain.Entities;
-using System.Reflection;
 
 namespace MyStudentPortal.Persistence.Contexts
 {
-    public class StudentPortalDBContext : DbContext
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StudentPortalDBContext"/> class.
+    /// </summary>
+    /// <param name="options">The options.</param>
+    public class StudentPortalDBContext(DbContextOptions options) : IdentityDbContext(options)
     {
-        #region Public Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StudentPortalDBContext"/> class.
-        /// </summary>
-        /// <param name="options">The options.</param>
-        public StudentPortalDBContext(DbContextOptions<StudentPortalDBContext> options)
-            : base(options)
-        {
-            Database.EnsureCreated();
-        }
-
-        #endregion Public Constructors
-
         #region Public Properties
 
         /// <summary>
@@ -38,21 +28,12 @@ namespace MyStudentPortal.Persistence.Contexts
         /// </value>
         public DbSet<Course> Courses { get; set; }
 
-        /// <summary>
         /// Gets the enrollments.
         /// </summary>
         /// <value>
         /// The enrollments.
         /// </value>
         public DbSet<Enrollment> Enrollments { get; set; }
-
-        /// <summary>
-        /// Gets the students.
-        /// </summary>
-        /// <value>
-        /// The students.
-        /// </value>
-        public DbSet<Student> Students { get; set; }
 
         #endregion Public Properties
 
@@ -122,7 +103,7 @@ namespace MyStudentPortal.Persistence.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=studentportal.db");
+            optionsBuilder.UseSqlite("Data Source=MyStudentPortal.db");
         }
 
         /// <summary>
@@ -130,7 +111,7 @@ namespace MyStudentPortal.Persistence.Contexts
         /// exposed in <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1" /> properties on your derived context. The resulting model may be cached
         /// and re-used for subsequent instances of your derived context.
         /// </summary>
-        /// <param name="modelBuilder">The builder being used to construct the model for this context. Databases (and other extensions) typically
+        /// <param name="builder">The builder being used to construct the model for this context. Databases (and other extensions) typically
         /// define extension methods on this object that allow you to configure aspects of the model that are specific
         /// to a given database.</param>
         /// <remarks>
@@ -143,61 +124,50 @@ namespace MyStudentPortal.Persistence.Contexts
         /// examples.
         /// </para>
         /// </remarks>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
 
-            modelBuilder.Entity<ApplicationUser>(entity =>
-            {
-                entity.ToTable(nameof(ApplicationUser));
-                entity.HasKey(entity => entity.Id);
-            });
+            //builder.Entity<Course>(entity =>
+            //{
+            //    entity.ToTable(nameof(Course));
+            //    entity.HasKey(entity => entity.Id);
 
-            modelBuilder.Entity<Course>(entity =>
-            {
-                entity.ToTable(nameof(Course));
-                entity.HasKey(entity => entity.Id);
+            //    entity.HasData(
+            //         new Course { Name = "Bookkeeping & Accounting Studies" },
+            //         new Course { Name = "Business Studies" },
+            //         new Course { Name = "Child Care Studies" },
+            //         new Course { Name = "CIMA: Management Accounting Studies" },
+            //         new Course { Name = "CompTIA Studies" },
+            //         new Course { Name = "Computer Studies" },
+            //         new Course { Name = "Creative Studies" },
+            //         new Course { Name = "Decor & Design Studies" },
+            //         new Course { Name = "Event Management Studies" });
+            //});
 
-                entity.HasData(
-                     new Course { Name = "Bookkeeping & Accounting Studies" },
-                     new Course { Name = "Business Studies" },
-                     new Course { Name = "Child Care Studies" },
-                     new Course { Name = "CIMA: Management Accounting Studies" },
-                     new Course { Name = "CompTIA Studies" },
-                     new Course { Name = "Computer Studies" },
-                     new Course { Name = "Creative Studies" },
-                     new Course { Name = "Decor & Design Studies" },
-                     new Course { Name = "Event Management Studies" });
-            });
+            //builder.Entity<Enrollment>(entity =>
+            //{
+            //    entity.ToTable(nameof(Enrollment));
+            //    entity.HasKey(entity => entity.Id);
+            //});
 
-            modelBuilder.Entity<Enrollment>(entity =>
-            {
-                entity.ToTable(nameof(Enrollment));
-                entity.HasKey(entity => entity.Id);
-            });
+            //builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            modelBuilder.Entity<Student>(entity =>
-            {
-                entity.ToTable(nameof(Student));
-                entity.HasKey(entity => entity.Id);
-            });
+            //builder.Entity<Enrollment>()
+            //    .HasKey(e => new { e.StudentId, e.CourseId });
 
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            //builder.Entity<Enrollment>()
+            //    .HasOne(e => e.ApplicationUser)
+            //    .WithMany(s => s.Enrollments)
+            //    .HasForeignKey(e => e.StudentId);
 
-            modelBuilder.Entity<Enrollment>()
-                .HasKey(e => new { e.StudentId, e.CourseId });
-
-            modelBuilder.Entity<Enrollment>()
-                .HasOne(e => e.Student)
-                .WithMany(s => s.Enrollments)
-                .HasForeignKey(e => e.StudentId);
-
-            modelBuilder.Entity<Enrollment>()
-                .HasOne(e => e.Course)
-                .WithMany(c => c.Enrollments)
-                .HasForeignKey(e => e.CourseId);
+            //builder.Entity<Enrollment>()
+            //    .HasOne(e => e.Course)
+            //    .WithMany(c => c.Enrollments)
+            //    .HasForeignKey(e => e.CourseId);
         }
 
         #endregion Protected Methods
+
     }
 }

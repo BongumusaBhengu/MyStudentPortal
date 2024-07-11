@@ -73,7 +73,7 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries
             //get course by id
             enrollment.Course = await _unitOfWork.Repository<Course>().GetByIdAsync(enrollment.CourseId);
             //get student by id
-            enrollment.Student = await _unitOfWork.Repository<Student>().GetByIdAsync(enrollment.StudentId);
+            //enrollment.ApplicationUser = await _unitOfWork.Repository<Student>().GetByIdAsync(enrollment.StudentId);
             //Update
             await _unitOfWork.Repository<Enrollment>().UpdateAsync(enrollment);
             await _unitOfWork.SaveAsync(cancellationToken);
