@@ -1,4 +1,4 @@
-﻿namespace MyStudentPortal.Application.Features
+﻿namespace MyStudentPortal.Application.Features.Courses
 {
     public class CourseDto
     {
@@ -8,14 +8,14 @@
         /// <value>
         /// The identifier.
         /// </value>
-        public IList<int>? Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the student identifier.
+        /// Gets or sets the name.
         /// </summary>
         /// <value>
-        /// The student identifier.
+        /// The name.
         /// </value>
-        public int StudentId { get; set; }
+        public string Name { get; set; }
     }
 }

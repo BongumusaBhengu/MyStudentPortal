@@ -128,22 +128,22 @@ namespace MyStudentPortal.Persistence.Contexts
         {
             base.OnModelCreating(builder);
 
-            //builder.Entity<Course>(entity =>
-            //{
-            //    entity.ToTable(nameof(Course));
-            //    entity.HasKey(entity => entity.Id);
+            builder.Entity<Course>(entity =>
+            {
+                entity.ToTable(nameof(Course));
+                entity.HasKey(entity => entity.Id);
 
-            //    entity.HasData(
-            //         new Course { Name = "Bookkeeping & Accounting Studies" },
-            //         new Course { Name = "Business Studies" },
-            //         new Course { Name = "Child Care Studies" },
-            //         new Course { Name = "CIMA: Management Accounting Studies" },
-            //         new Course { Name = "CompTIA Studies" },
-            //         new Course { Name = "Computer Studies" },
-            //         new Course { Name = "Creative Studies" },
-            //         new Course { Name = "Decor & Design Studies" },
-            //         new Course { Name = "Event Management Studies" });
-            //});
+                entity.HasData(
+                     new Course { Id = 1, Name = "Bookkeeping & Accounting Studies" },
+                     new Course { Id = 2, Name = "Business Studies" },
+                     new Course { Id = 3, Name = "Child Care Studies" },
+                     new Course { Id = 4, Name = "CIMA: Management Accounting Studies" },
+                     new Course { Id = 5, Name = "CompTIA Studies" },
+                     new Course { Id = 6, Name = "Computer Studies" },
+                     new Course { Id = 7, Name = "Creative Studies" },
+                     new Course { Id = 8, Name = "Decor & Design Studies" },
+                     new Course { Id = 9, Name = "Event Management Studies" });
+            });
 
             //builder.Entity<Enrollment>(entity =>
             //{

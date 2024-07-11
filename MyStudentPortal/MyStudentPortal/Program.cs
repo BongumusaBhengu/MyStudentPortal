@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyStudentPortal.Application.Common.Mappings;
-using MyStudentPortal.Application.Features.Users.Queries;
+using MyStudentPortal.Application.Features.Courses;
 using MyStudentPortal.Application.Repositories.Interfaces;
 using MyStudentPortal.Components;
 using MyStudentPortal.Components.Account;
@@ -32,7 +32,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddDbContext<StudentPortalDBContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<StudentPortalDBContext>()
@@ -53,7 +52,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 
 //// Add MediatR handlers
 ////User
-builder.Services.AddTransient<IRequestHandler<CreateApplicationUserQuery, ApplicationUser>, CreateApplicationUserQueryHandler>();
+builder.Services.AddTransient<IRequestHandler<GetCourseQuery, IList<CourseDto>>, GetCourseQueryHandler>();
 //builder.Services.AddTransient<IRequestHandler<GetUserApplicationUserByIdQuery, ApplicationUserDto>, GetUserApplicationUserByIdQueryHandler>();
 //builder.Services.AddTransient<IRequestHandler<UpdateApplicationUserQuery, ApplicationUserDto>, UpdateApplicationUserQueryHandler>();
 //builder.Services.AddTransient<IRequestHandler<DeleteApplicationUserQuery, bool>, DeleteApplicationUserQueryHandler>();

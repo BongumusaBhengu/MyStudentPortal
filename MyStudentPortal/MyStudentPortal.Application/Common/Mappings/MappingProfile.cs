@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyStudentPortal.Application.Features.Courses;
 using MyStudentPortal.Application.Features.Enrollments.Queries;
 using MyStudentPortal.Application.Features.Users;
 using MyStudentPortal.Domain.Entities;
@@ -27,6 +28,11 @@ namespace MyStudentPortal.Application.Common.Mappings
                 .ForMember(dest => dest.EnrollmentDate, opt => opt.MapFrom(src => src.EnrollmentDate))
                 .ForMember(dest => dest.ApplicationUser, opt => opt.MapFrom(src => src.ApplicationUser))
                 .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.StudentId));
+
+            //Entity to Dto Course
+            CreateMap<Course, CourseDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
         }
 
         #endregion Public Constructors
