@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyStudentPortal.Application.Common.Mappings;
 using MyStudentPortal.Application.Features.Courses;
+using MyStudentPortal.Application.Features.Enrollments.Queries;
+using MyStudentPortal.Application.Features.Enrollments.Queries.Create;
+using MyStudentPortal.Application.Features.Enrollments.Queries.Get;
 using MyStudentPortal.Application.Repositories.Interfaces;
 using MyStudentPortal.Components;
 using MyStudentPortal.Components.Account;
@@ -41,6 +44,9 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 // Register IUnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+//Register IEnrollmentRepository
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -50,14 +56,8 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 //// Add MediatR handlers
 ////User
 builder.Services.AddTransient<IRequestHandler<GetCourseQuery, IList<CourseDto>>, GetCourseQueryHandler>();
-//builder.Services.AddTransient<IRequestHandler<GetUserApplicationUserByIdQuery, ApplicationUserDto>, GetUserApplicationUserByIdQueryHandler>();
-//builder.Services.AddTransient<IRequestHandler<UpdateApplicationUserQuery, ApplicationUserDto>, UpdateApplicationUserQueryHandler>();
-//builder.Services.AddTransient<IRequestHandler<DeleteApplicationUserQuery, bool>, DeleteApplicationUserQueryHandler>();
-////ApplicationUser
-//builder.Services.AddTransient<IRequestHandler<RegisterStudentQuery, StudentDto>, RegisterStudentQueryHandler>();
-//builder.Services.AddTransient<IRequestHandler<GetStudentByIdQuery, StudentDto>, GetStudentByIdQueryHandler>();
-//builder.Services.AddTransient<IRequestHandler<UpdateStudentQuery, StudentDto>, UpdateStudentQueryHandler>();
-//builder.Services.AddTransient<IRequestHandler<DeleteStudentUserQuery, bool>, DeleteStudentUserQueryHandler>();
+builder.Services.AddTransient<IRequestHandler<CreateEnrollmentsQuery>, CreateEnrollmentsQueryHandler>();
+builder.Services.AddTransient<IRequestHandler<GetEnrollmentsQuery, IList<EnrollmentsDto>>, GetEnrollmentsQueryHandler>();
 
 var app = builder.Build();
 
@@ -65,7 +65,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    //app.UseMigrationsEndPoint();
 }
 else
 {

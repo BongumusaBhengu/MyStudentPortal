@@ -15,6 +15,14 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries
         public int CourseId { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the course.
+        /// </summary>
+        /// <value>
+        /// The name of the course.
+        /// </value>
+        public int CourseName { get; set; }
+
+        /// <summary>
         /// Gets or sets the enrollment date.
         /// </summary>
         /// <value>

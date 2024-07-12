@@ -48,6 +48,7 @@
     private ApplicationUser user = default!;
     private string? username;
     private string? phoneNumber;
+    private string? email;
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
@@ -60,12 +61,21 @@
         user = await UserManager.GetUserAsync(HttpContext.User);
         username = await UserManager.GetUserNameAsync(user);
         phoneNumber = await UserManager.GetPhoneNumberAsync(user);
+        email = await UserManager.GetPhoneNumberAsync(user);
 
         Input.PhoneNumber ??= phoneNumber;
     }
 
     private async Task OnValidSubmitAsync()
     {
+        if (Input.Email != email)
+        {
+            var setEmailResult = await UserManager.SetEmailAsync(user, Input.Email);
+            if (!setEmailResult.Succeeded)
+            {
+                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set email.", HttpContext);
+            }
+        }
         if (Input.PhoneNumber != phoneNumber)
         {
             var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
@@ -81,6 +91,11 @@
 
     private sealed class InputModel
     {
+        
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string? Email { get; set; }
+        
         [Phone]
         [Display(Name = "Phone number")]
         public string? PhoneNumber { get; set; }

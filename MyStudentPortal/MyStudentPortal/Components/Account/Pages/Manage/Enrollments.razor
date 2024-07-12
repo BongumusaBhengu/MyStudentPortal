@@ -5,6 +5,7 @@
 @using MyStudentPortal.Application.Features.Courses
 @using MyStudentPortal.Application.Features.Enrollments.Queries
 @using MyStudentPortal.Application.Features.Enrollments.Queries.Create
+@using MyStudentPortal.Application.Features.Enrollments.Queries.Get
 @using MyStudentPortal.Domain.Entities
 
 
@@ -32,13 +33,13 @@
     </div>
     <div class="col-md-4">
         <h2>Registered Course</h2>
-        <EditForm Model="Input" FormName="enrollment" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <label for="courseList" class="form-label">Courses:</label>
+        <EditForm>
+            <label for="registerdCourseList" class="form-label">Courses:</label>
             <div class="form-floating mb-3">
-                <select multiple id="courseList" class="form-control" style="height: 400px;">
-                    @foreach (var course in Courses)
+                <select multiple id="registerdCourseList" class="form-control" style="height: 400px;">
+                    @foreach (var course in RegisteredCourses)
                     {
-                        <option value="@course.Id">@course.Name</option>
+                        <option value="@course.CourseId">@course.CourseName</option>
                     }
                 </select>
             </div>
@@ -51,6 +52,8 @@
 
     private IList<CourseDto>? Courses { get; set; }
 
+    private IList<EnrollmentsDto>? RegisteredCourses { get; set; }
+
     [SupplyParameterFromForm]
     private EnrollmentsDto? Input { get; set; } = new();
 
@@ -61,6 +64,7 @@
     {
         user = await UserManager.GetUserAsync(HttpContext.User);
         Courses = await GetCoursesAsync();
+        RegisteredCourses = await Mediator.Send(new GetEnrollmentsQuery(user.Id));
     }
 
     private async Task<IList<CourseDto>> GetCoursesAsync()
