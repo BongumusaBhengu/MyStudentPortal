@@ -12,59 +12,77 @@
 @inject IMediator Mediator;
 @inject UserManager<ApplicationUser> UserManager
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Course Registration</h2>
-        <EditForm Model="Input" FormName="enrollment" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <ValidationSummary class="text-danger" role="alert" />
-            <label for="courseList" class="form-label">Courses:</label>
-            <div class="form-floating mb-3">
-                <select multiple id="courseList" class="form-control" style="height: 400px;">
-                    @foreach (var course in Courses)
-                    {
-                        <option value="@course.Id">@course.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="form-floating mb-3">
-                <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-            </div>
-        </EditForm>
+<div class="row col-md-12">
+    <div class="col-md-6">
+        <MudPaper Class="py-3" Width="350px">
+            <MudItem xs="12">
+                <div class="d-flex" style="padding-bottom: 25px;">
+                    <MudText>Select Courses:</MudText>
+                </div>
+            </MudItem>
+            <MudList @bind-SelectedValues="selectedCourses" SelectionMode="SelectionMode.MultiSelection" Label="Select Course:" Color="Color.Tertiary">
+                @foreach (var item in _courses)
+                {
+                    <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                }
+            </MudList>
+            <MudCardActions>
+                <MudButton OnClick="() => RegiterAsync()" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">Register Course(s)</MudButton>
+            </MudCardActions>
+        </MudPaper>
     </div>
-    <div class="col-md-4">
-        <h2>Registered Course</h2>
-        <EditForm>
-            <label for="registerdCourseList" class="form-label">Courses:</label>
-            <div class="form-floating mb-3">
-                <select multiple id="registerdCourseList" class="form-control" style="height: 400px;">
-                    @foreach (var course in RegisteredCourses)
-                    {
-                        <option value="@course.CourseId">@course.CourseName</option>
-                    }
-                </select>
-            </div>
-        </EditForm>
+    <div class="col-md-6">
+        <MudPaper Class="py-3" Width="350px">
+            <MudItem xs="12">
+                <div class="d-flex" style="padding-bottom: 25px;">
+                    <MudText>Registered Courses:</MudText>
+                </div>
+            </MudItem>
+            <MudList @bind-SelectedValues="selectedCourses" SelectionMode="SelectionMode.MultiSelection" Label="Registered Course:" Color="Color.Tertiary">
+                @foreach (var item in _registeredCourses)
+                {
+                    <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                }
+            </MudList>
+            <MudCardActions>
+                <MudButton OnClick="() => DeRegisterAsync()" Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Small">De-register Course(s)</MudButton>
+            </MudCardActions>
+        </MudPaper>
     </div>
 </div>
+
 @code {
 
-    private ApplicationUser user = default!;
+    private ApplicationUser _user = default!;
 
-    private IList<CourseDto>? Courses { get; set; }
+    private List<CourseDto> _courses { get; set; } = new();
 
-    private IList<EnrollmentsDto>? RegisteredCourses { get; set; }
+    private List<CourseDto> _registeredCourses { get; set; } = new();
+
+    private IReadOnlyCollection<CourseDto> selectedCourses { get; set; }
 
     [SupplyParameterFromForm]
-    private EnrollmentsDto? Input { get; set; } = new();
+    private CourseDto Input { get; set; } = new();
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserManager.GetUserAsync(HttpContext.User);
-        Courses = await GetCoursesAsync();
-        RegisteredCourses = await Mediator.Send(new GetEnrollmentsQuery(user.Id));
+        _user = await UserManager.GetUserAsync(HttpContext.User);
+
+        var coursesInDB = await GetCoursesAsync();
+
+        var registeredCourse = await GetRegisteredCoursesAsync(_user.Id);
+
+        if (coursesInDB is not null)
+        {
+            _courses = coursesInDB.Except(registeredCourse).ToList();
+
+            if (registeredCourse is not null)
+                _registeredCourses = registeredCourse.Except(coursesInDB).ToList();
+        }
+
     }
 
     private async Task<IList<CourseDto>> GetCoursesAsync()
@@ -72,10 +90,57 @@
         return await Mediator.Send(new GetCourseQuery());
     }
 
-    private async Task OnValidSubmitAsync()
+    private async Task<IList<CourseDto>> GetRegisteredCoursesAsync(string userId)
     {
-        if (Input is not null)
-            await Mediator.Send(new CreateEnrollmentsQuery(Input));
+        return await Mediator.Send(new GetEnrollmentsQuery(userId));
     }
 
+    private void AddCourse()
+    {
+        var courseId = 0;
+        if (_courses is not null)
+        {
+            var courseToRemove = _courses.Select(x => x).Where(x => x.Id == courseId).First();
+
+            // _courses.Remove(courseToRemove);
+            _registeredCourses.Add(courseToRemove);
+        }
+    }
+
+    private void RemoveCourse(int courseId)
+    {
+        if (_registeredCourses is not null)
+        {
+            var courseToRemove = _courses.Select(x => x).Where(x => x.Id == courseId).First();
+
+            _registeredCourses.Remove(courseToRemove);
+            // _courses.Add(courseToRemove);
+        }
+    }
+
+    private async Task RegiterAsync()
+    {
+        var newRegistration = new EnrollmentsDto()
+            {
+                ApplicationUser = _user,
+                Courses = selectedCourses.ToList(),
+                EnrollmentDate = DateTime.Now
+
+            };
+
+        await Mediator.Send(new CreateEnrollmentsQuery(newRegistration));
+    }
+
+    private async Task DeRegisterAsync()
+    {
+        var newRegistration = new EnrollmentsDto()
+            {
+                ApplicationUser = _user,
+                Courses = selectedCourses.ToList(),
+                EnrollmentDate = DateTime.Now
+
+            };
+
+        await Mediator.Send(new CreateEnrollmentsQuery(newRegistration));
+    }
 }

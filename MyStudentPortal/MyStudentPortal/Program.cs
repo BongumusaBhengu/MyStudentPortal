@@ -2,9 +2,9 @@ using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using MyStudentPortal.Application.Common.Mappings;
 using MyStudentPortal.Application.Features.Courses;
-using MyStudentPortal.Application.Features.Enrollments.Queries;
 using MyStudentPortal.Application.Features.Enrollments.Queries.Create;
 using MyStudentPortal.Application.Features.Enrollments.Queries.Get;
 using MyStudentPortal.Application.Repositories.Interfaces;
@@ -20,6 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddMudServices();
+
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>();
@@ -34,7 +36,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddDbContext<StudentPortalDBContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<StudentPortalDBContext>()
@@ -53,11 +54,12 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 //MediatR services
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-//// Add MediatR handlers
-////User
+//Add MediatR handlers
+//Course
 builder.Services.AddTransient<IRequestHandler<GetCourseQuery, IList<CourseDto>>, GetCourseQueryHandler>();
+//Enrollment
 builder.Services.AddTransient<IRequestHandler<CreateEnrollmentsQuery>, CreateEnrollmentsQueryHandler>();
-builder.Services.AddTransient<IRequestHandler<GetEnrollmentsQuery, IList<EnrollmentsDto>>, GetEnrollmentsQueryHandler>();
+builder.Services.AddTransient<IRequestHandler<GetEnrollmentsQuery, IList<CourseDto>>, GetEnrollmentsQueryHandler>();
 
 var app = builder.Build();
 
@@ -83,7 +85,5 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
-
-
 
 await app.RunAsync();

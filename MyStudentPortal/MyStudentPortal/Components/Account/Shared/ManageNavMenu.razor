@@ -3,15 +3,11 @@
 
 @inject SignInManager<ApplicationUser> SignInManager
 
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage" Match="NavLinkMatch.All">Profile</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/ChangePassword">Password</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/Enrollments">Enrollments</NavLink>
-    </li>
-</ul>
+<MudPaper Class="py-3">
+    <MudNavMenu>
+        <MudNavLink class="nav-link" href="Account/Manage" Match="NavLinkMatch.All">Personal Details</MudNavLink>
+        <MudNavLink class="nav-link" href="Account/Manage/ChangePassword">Password</MudNavLink>
+        <MudNavLink class="nav-link" href="Account/Manage/Enrollments">Enrollments</MudNavLink>
+    </MudNavMenu>
+</MudPaper>
 

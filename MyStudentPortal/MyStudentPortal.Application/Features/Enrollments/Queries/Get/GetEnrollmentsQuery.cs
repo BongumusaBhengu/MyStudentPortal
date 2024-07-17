@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using MyStudentPortal.Application.Features.Courses;
 using MyStudentPortal.Application.Repositories.Interfaces;
 
 namespace MyStudentPortal.Application.Features.Enrollments.Queries.Get
 {
-    public record GetEnrollmentsQuery : IRequest<IList<EnrollmentsDto>>
+    public record GetEnrollmentsQuery : IRequest<IList<CourseDto>>
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -24,7 +25,7 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries.Get
         }
     }
 
-    public class GetEnrollmentsQueryHandler : IRequestHandler<GetEnrollmentsQuery, IList<EnrollmentsDto>>
+    public class GetEnrollmentsQueryHandler : IRequestHandler<GetEnrollmentsQuery, IList<CourseDto>>
     {
         #region Private Fields
 
@@ -58,12 +59,12 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries.Get
         /// <param name="query">The query.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<IList<EnrollmentsDto>> Handle(GetEnrollmentsQuery query, CancellationToken cancellationToken)
+        public async Task<IList<CourseDto>> Handle(GetEnrollmentsQuery query, CancellationToken cancellationToken)
         {
             var studentEnrollments = await _enrollmentRepository.GetAllForStudent(query.StudentId);
 
             //Return
-            return _mapper.Map<IList<EnrollmentsDto>>(studentEnrollments);
+            return _mapper.Map<IList<CourseDto>>(studentEnrollments.Select(x=>x.Course));
         }
 
         #endregion Public Methods

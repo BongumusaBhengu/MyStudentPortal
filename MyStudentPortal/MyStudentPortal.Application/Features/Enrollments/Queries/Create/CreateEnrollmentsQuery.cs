@@ -32,12 +32,10 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries.Create
         public async Task Handle(CreateEnrollmentsQuery query, CancellationToken cancellationToken)
         {
             //Map
-            var enrollments = mapper.Map<Enrollment>(query.EnrollmentsDto);
+            var enrollment = mapper.Map<Enrollment>(query.EnrollmentsDto);
 
-            //foreach (var enrollment in enrollments)
-            //{
-            //    await unitOfWork.Repository<Enrollment>().AddAsync(enrollment);
-            //}
+            await unitOfWork.Repository<Enrollment>().AddAsync(enrollment);
+
             await unitOfWork.SaveAsync(cancellationToken);
         }
 

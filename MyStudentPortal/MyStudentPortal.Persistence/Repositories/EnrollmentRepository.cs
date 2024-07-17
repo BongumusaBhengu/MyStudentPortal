@@ -36,10 +36,11 @@ namespace MyStudentPortal.Persistence.Repositories
         /// </summary>
         /// <param name="studentId">The student identifier.</param>
         /// <returns></returns>
-        public async Task<List<Enrollment>> GetAllForStudent(string studentId)
+        public async Task<IList<Enrollment>> GetAllForStudent(string studentId)
         {
             return await _dbContext.Enrollments
                 .Where(e => e.StudentId == studentId)
+                .Include(x=>x.Course)
                 .ToListAsync();
         }
 

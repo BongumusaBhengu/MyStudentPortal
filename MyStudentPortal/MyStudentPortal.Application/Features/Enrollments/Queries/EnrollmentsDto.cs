@@ -1,4 +1,5 @@
-﻿using MyStudentPortal.Domain.Entities;
+﻿using MyStudentPortal.Application.Features.Courses;
+using MyStudentPortal.Domain.Entities;
 
 namespace MyStudentPortal.Application.Features.Enrollments.Queries
 {
@@ -7,20 +8,12 @@ namespace MyStudentPortal.Application.Features.Enrollments.Queries
         #region Public Properties
 
         /// <summary>
-        /// Gets or sets the course identifier.
+        /// Gets or sets the courses.
         /// </summary>
         /// <value>
-        /// The course identifier.
+        /// The courses.
         /// </value>
-        public int CourseId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the course.
-        /// </summary>
-        /// <value>
-        /// The name of the course.
-        /// </value>
-        public int CourseName { get; set; }
+        public IList<CourseDto>? Courses { get; set; }
 
         /// <summary>
         /// Gets or sets the enrollment date.

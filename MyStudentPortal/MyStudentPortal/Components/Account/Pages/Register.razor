@@ -16,55 +16,59 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject IMediator Mediator
+@inject ISnackbar Snackbar
 
 <PageTitle>Create New User</PageTitle>
 
-<div class="row">
-    <div class="col-md-4">
-    </div>
-    <div class="col-md-4">
-        <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Name" class="form-control" aria-required="true" placeholder="John" />
-                <label for="name">Name</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Surname" class="form-control" aria-required="true" placeholder="Black" />
-                <label for="surname">Surname</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
-    </div>
-    <div class="col-md-4">
-    </div>
-</div>
 
+<EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudItem xs="12">
+                        <div class="d-flex justify-center" style="padding-bottom: 25px;">
+                            <MudText>Register a new account</MudText>
+                        </div>
+                    </MudItem>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="Input.Name" class="form-control" aria-required="true" placeholder="John" />
+                        <label for="name">Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="Input.Surname" class="form-control" aria-required="true" placeholder="Black" />
+                        <label for="surname">Surname</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label for="email">Email</label>
+                        <ValidationMessage For="() => Input.Email" class="text-danger" />
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label for="password">Password</label>
+                        <ValidationMessage For="() => Input.Password" class="text-danger" />
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label for="confirm-password">Confirm Password</label>
+                        <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+                    </div>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">Register</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 @code {
     private IEnumerable<IdentityError>? identityErrors;
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
     [SupplyParameterFromForm]
-    private ApplicationUserDto Input { get; set; } = new ();
+    private ApplicationUserDto Input { get; set; } = new();
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
@@ -78,12 +82,12 @@
 
         if (!result.Succeeded)
         {
-            identityErrors = result.Errors;
+            Snackbar.Add($"Error: {string.Join(", ", result.Errors.Select(error => error.Description))}", Severity.Error);
             return;
         }
 
         Logger.LogInformation("User created a new account with password.");
-
+        Snackbar.Add($"{user.Name} {user.Surname} created a new account with password.", Severity.Info);
 
         await SignInManager.SignInAsync(user, isPersistent: true);
         RedirectManager.RedirectTo("Account/Login");
@@ -93,12 +97,16 @@
     {
         try
         {
-            return Activator.CreateInstance<ApplicationUser>();
+            var newUser = Activator.CreateInstance<ApplicationUser>();
+            newUser.Name = Input.Name;
+            newUser.Surname = Input.Surname;
+
+            return newUser;
         }
         catch
         {
             throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
+            $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
         }
     }
-}
+    }

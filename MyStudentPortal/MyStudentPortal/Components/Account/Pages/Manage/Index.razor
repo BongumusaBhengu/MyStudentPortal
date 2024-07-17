@@ -7,95 +7,80 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
+@inject ISnackbar Snackbar
 
 <PageTitle>Profile</PageTitle>
 
-<h3>Profile</h3>
-<StatusMessage />
-
-<div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <input type="text" value="@user.Name" class="form-control" disabled />
-                <label for="name" class="form-label">Name</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="text" value="@user.Surname" class="form-control" disabled />
-                <label for="surname" class="form-label">Surname</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="text" value="@user.Email" class="form-control" disabled />
-                <label for="email" class="form-label">Email</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
-                <label for="username" class="form-label">Username</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                <label for="phone-number" class="form-label">Phone number</label>
-                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </EditForm>
-    </div>
-</div>
+<EditForm EditContext="editContext" method="post" OnValidSubmit="OnValidSubmitAsync" FormName="profile">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="6" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudItem xs="12">
+                        <div class="d-flex justify-center" style="padding-bottom: 25px;">
+                            <MudText>Profile</MudText>
+                        </div>
+                    </MudItem>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="user.Name" class="form-control" />
+                        <label for="name" class="form-label">Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="user.Surname" class="form-control" />
+                        <label for="surname" class="form-label">Surname</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="user.UserName" class="form-control" disabled />
+                        <label for="email" class="form-label">Email</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="user.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                        <label for="phone-number" class="form-label">Phone number</label>
+                    </div>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">Save</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
 @code {
     private ApplicationUser user = default!;
-    private string? username;
-    private string? phoneNumber;
-    private string? email;
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    private EditContext? editContext;
 
     protected override async Task OnInitializedAsync()
     {
         user = await UserManager.GetUserAsync(HttpContext.User);
-        username = await UserManager.GetUserNameAsync(user);
-        phoneNumber = await UserManager.GetPhoneNumberAsync(user);
-        email = await UserManager.GetPhoneNumberAsync(user);
-
-        Input.PhoneNumber ??= phoneNumber;
+        editContext = new EditContext(user);
     }
 
     private async Task OnValidSubmitAsync()
     {
-        if (Input.Email != email)
+
+        var result = await UserManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
         {
-            var setEmailResult = await UserManager.SetEmailAsync(user, Input.Email);
-            if (!setEmailResult.Succeeded)
-            {
-                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set email.", HttpContext);
-            }
-        }
-        if (Input.PhoneNumber != phoneNumber)
-        {
-            var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-            if (!setPhoneResult.Succeeded)
-            {
-                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
-            }
+            Snackbar.Add($"Error: {string.Join(", ", result.Errors.Select(error => error.Description))}", Severity.Error);
+            return;
         }
 
         await SignInManager.RefreshSignInAsync(user);
+
+        Snackbar.Add($"{user.Name} {user.Surname} profile has been updated", Severity.Info);
+
         RedirectManager.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
     }
 
     private sealed class InputModel
     {
-        
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string? Email { get; set; }
-        
         [Phone]
         [Display(Name = "Phone number")]
         public string? PhoneNumber { get; set; }

@@ -9,6 +9,6 @@ namespace MyStudentPortal.Application.Repositories.Interfaces
         /// </summary>
         /// <param name="studentId">The student identifier.</param>
         /// <returns></returns>
-        Task<List<Enrollment>> GetAllForStudent(string studentId);
+        Task<IList<Enrollment>> GetAllForStudent(string studentId);
     }
 }
